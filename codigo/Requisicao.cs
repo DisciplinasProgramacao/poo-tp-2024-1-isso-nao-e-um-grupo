@@ -1,70 +1,63 @@
 ﻿using System;
 
-public class  Requisicao
+public class Requisicao
 {
-    private Guid proximoIdRequisicao;
+    private static Guid proximoIdRequisicao => Guid.NewGuid();
     private Guid requisicaoId;
     private DateTime dataDeEntrada;
-    private DateTime dataSaida;
-    private Cliente dadosDosClientes;
+    private DateTime? dataSaida;
+    private Cliente dadosDoCliente;
     private bool status;
-    private Mesa mesa;
+    private Mesa? mesa;
     private int numeroDePessoas;
 
 
-    public Requisicao(int numeroDePessoas, Mesa mesa)
+    public Requisicao(int numeroDePessoas, Mesa mesa, Cliente cliente)
     {
+        requisicaoId = proximoIdRequisicao;
         dataDeEntrada = DateTime.Now;
-        this.proximoIdRequisicao = new Guid();
-        this.numeroDePessoas = numeroDePessoas;
+        dadosDoCliente = cliente;
+        status = true;
         this.mesa = mesa;
+        this.numeroDePessoas = numeroDePessoas;
     }
 
-    public Requisicao()
+    public Requisicao(int numeroDePessoas, Cliente cliente)
     {
+        requisicaoId = proximoIdRequisicao;
         dataDeEntrada = DateTime.Now;
-        proximoIdRequisicao = Guid.NewGuid();
-        mesa = null;
+        dadosDoCliente = cliente;
+        status = true;
+        this.mesa = null;
+        this.numeroDePessoas = numeroDePessoas;
     }
-
-    public Cliente GetCliente()
-    {
-        return dadosDosClientes;
-    }
-
     public int GetQuantidadeDePessoas()
     {
         return numeroDePessoas;
     }
-    private void RegistrarDataDeSaida()
-    {
-        if (dataSaida == null)
-        {
-            dataSaida = DateTime.Now;
-            Console.WriteLine("Data de saída registrada: " + dataSaida);
-        }
-        else
-        {
-            throw new InvalidOperationException("A requisição já foi fechada.");
-        }
 
+    public Cliente GetCliente()
+    {
+        return dadosDoCliente;
     }
 
     public bool OcuparMesa(Mesa mesa)
     {
-        if (mesa.VerificarDisponibilidade(numeroDePessoas))
+        if (this.mesa == null)
         {
             this.mesa = mesa;
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     public void FecharRequisicao()
     {
         RegistrarDataDeSaida();
-        this.status = true;
+        this.status = false;
     }
 
     public bool AdicionarPessoas(int quantidade)
@@ -90,6 +83,18 @@ public class  Requisicao
         else
         {
             return false;
+        }
+    }
+    private void RegistrarDataDeSaida()
+    {
+        if (dataSaida == null)
+        {
+            dataSaida = DateTime.Now;
+            Console.WriteLine("Data de saída registrada: " + dataSaida);
+        }
+        else
+        {
+            throw new InvalidOperationException("A requisição já foi fechada.");
         }
     }
 }
