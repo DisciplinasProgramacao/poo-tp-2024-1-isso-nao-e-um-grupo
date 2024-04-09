@@ -9,12 +9,12 @@ namespace POO
     {
         private static Guid proximoIdCliente = Guid.NewGuid();
         private Guid idCliente;
+        public Guid IdCliente => idCliente;
 
         public Cliente()
         {
             idCliente = proximoIdCliente;
             proximoIdCliente = Guid.NewGuid();
         }
-        public Guid ConsultarIdCliente() => idCliente;
     }
 }
