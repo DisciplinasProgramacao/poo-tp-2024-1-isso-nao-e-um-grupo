@@ -60,32 +60,7 @@ namespace POO
         {
             RegistrarDataDeSaida();
             this.status = false;
-        }
-
-        public bool AdicionarPessoas(int quantidade)
-        {
-            if (quantidade > 0)
-            {
-                this.numeroDePessoas += quantidade;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool RetirarPessoas(int quantidade)
-        {
-            if (quantidade > 0 && this.numeroDePessoas - quantidade >= 0)
-            {
-                this.numeroDePessoas -= quantidade;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            mesa.DesocuparMesa();
         }
         private void RegistrarDataDeSaida()
         {

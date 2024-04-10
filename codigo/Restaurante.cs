@@ -5,39 +5,107 @@ namespace POO
 {
     public class Restaurante
     {
-        private const NUMERO_DE_MESAS = 10;
+        #region Constantes
+        private const int NUMERO_DE_MESAS = 10;
+
+        #endregion
+
+        #region Atributos
         private List<Requisicao> requisicoes;
-        private Mesa[] mesas = new Mesa[NUMERO_DE_MESAS];
+        private List<Mesa> mesas;
         private Queue<Requisicao> filaDeEspera;
 
-        private bool VerificarClienteValido(Cliente cliente)
-        {
+        #endregion
 
+        #region Construtor
+
+        public Restaurante()
+        {
+            requisicoes = new List<Requisicao>();
+            mesas = new List<Mesa>()
+            {
+
+            };
+            filaDeEspera = new Queue<Requisicao>();
         }
 
-        private Requisicao CriarRequisicao(Cliente cliente)
-        {
+        #endregion
 
+        #region Métodos Públicos
+
+        public bool AlocarMesa(Cliente cliente, int quantidadePessoas)
+        {
+            Mesa? mesa;
+
+            if (!VerificarNumeroDePessoas(quantidadePessoas))
+            {
+                throw new InvalidOperationException("Não há mesas para essa quantidade de pessoas!");
+            }
+
+            if (VerificarExistenciaMesasDisponiveis())
+            {
+                mesa = ObterMesasDisponiveis(quantidadePessoas);
+
+                if (mesa == null)
+                {
+                    filaDeEspera.Enqueue(new Requisicao(cliente, quantidadePessoas));
+                    return false;
+                }
+
+                requisicoes.Add(new Requisicao(cliente, quantidadePessoas, mesa));
+                mesa.OcuparMesa();
+            }
+
+            return true;
         }
 
-        private bool VerificarDisponibilidade(int numeroMesa) 
+        public bool RegistrarSaida(Guid idCliente)
         {
-            
+            Requisicao? requisicao = requisicoes.Find(r => r.GetCliente().GetIdCliente() == idCliente);
+
+            if (requisicao == null)
+            {
+                return false;
+            }
+
+            requisicao.FecharRequisicao();
+            ProcurarMesaParaRequisicao();
+            return true;
         }
 
-        private int VerificarMesaDisponivel()
-        {
+        #endregion
 
+        #region Métodos Privados
+
+        private void ProcurarMesaParaRequisicao()
+        {
+            Requisicao requisicao = filaDeEspera.Dequeue();
+            Mesa mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
+            if (mesa != null)
+            {
+                requisicoes.Add(new Requisicao(requisicao.GetCliente(), requisicao.GetQuantidadeDePessoas(), mesa));
+                mesa.OcuparMesa();
+            }
+            else
+            {
+                filaDeEspera.Enqueue(requisicao);
+            }
+        }
+        private bool VerificarNumeroDePessoas(int quantidadePessoas)
+        {
+            return quantidadePessoas > 0 && quantidadePessoas <= 10;
         }
 
-        public bool RegistrarSaida(Guid idRequisicao)
+        private bool VerificarExistenciaMesasDisponiveis()
         {
-
+            return mesas.Find(m => m.GetDisponibilidade()) != null;
         }
 
-        public bool AlocarMesa(Cliente cliente)
+        private Mesa? ObterMesasDisponiveis(int quantidadePessoas)
         {
-
+            return mesas.Find(m => m.VerificarDisponibilidade(quantidadePessoas));
         }
+
+        #endregion
     }
 }
