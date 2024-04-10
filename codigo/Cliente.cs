@@ -15,9 +15,6 @@ namespace POO
             idCliente = proximoIdCliente;
         }
 
-        public Guid GetIdCliente()
-        {
-            return idCliente;
-        }
+        public Guid GetIdCliente() => idCliente;
     }
 }
