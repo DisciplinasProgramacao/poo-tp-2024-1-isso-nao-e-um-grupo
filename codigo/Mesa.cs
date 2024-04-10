@@ -20,26 +20,8 @@ namespace POO
             proximaMesa++;
         }
 
-        public void DefinirDisponibilidade(bool disponibilidade)
-        {
-        this.disponibilidade = disponibilidade;
-        }
-
-        public bool EstahDisponivel(int QtndPessoas)
-        {
-            if (disponibilidade)
-            {
-            return QtndPessoas <= capacidade;
-            }
-            else
-            {
-            return false;
-            }
-        }
-
-        public int GetNumeroDaMesa()
-        {
-         return numeroDaMesa;
-        }
+        public void DefinirDisponibilidade(bool disponibilidade) => this.disponibilidade = disponibilidade;
+        public bool EstahDisponivel(int QtndPessoas) => disponibilidade ? QtndPessoas <= capacidade : false;
+        public int GetNumeroDaMesa() => numeroDaMesa;
     }
 }
