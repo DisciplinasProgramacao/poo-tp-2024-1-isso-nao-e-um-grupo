@@ -8,12 +8,14 @@ public class Requisicao
     private DateTime? dataSaida;
     private Cliente dadosDoCliente;
     private bool status;
-    private Mesa? mesa;
+    private Mesa mesa;
     private int numeroDePessoas;
 
 
     public Requisicao(int numeroDePessoas, Mesa mesa, Cliente cliente)
     {
+        if (numeroDePessoas <= 0)
+            throw new ArgumentException("O número de pessoas deve ser maior que zero.");
         requisicaoId = proximoIdRequisicao;
         dataDeEntrada = DateTime.Now;
         dadosDoCliente = cliente;
@@ -24,6 +26,8 @@ public class Requisicao
 
     public Requisicao(int numeroDePessoas, Cliente cliente)
     {
+        if (numeroDePessoas <= 0)
+            throw new ArgumentException("O número de pessoas deve ser maior que zero.");
         requisicaoId = proximoIdRequisicao;
         dataDeEntrada = DateTime.Now;
         dadosDoCliente = cliente;
@@ -43,15 +47,11 @@ public class Requisicao
 
     public bool OcuparMesa(Mesa mesa)
     {
-        if (this.mesa == null)
-        {
-            this.mesa = mesa;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (mesa != null)
+            throw new InvalidOperationException("A mesa já está ocupada.");
+
+        this.mesa = mesa;
+        return true;
     }
 
     public void FecharRequisicao()
