@@ -1,4 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
+
+sing System;
 using System.Collections.Generic;
 
 namespace POO
@@ -6,11 +9,13 @@ namespace POO
     public class Restaurante
     {
         #region Constantes
+
         private const int NUMERO_DE_MESAS = 10;
 
         #endregion
 
         #region Atributos
+
         private List<Requisicao> requisicoes;
         private List<Mesa> mesas;
         private Queue<Requisicao> filaDeEspera;
@@ -52,7 +57,7 @@ namespace POO
                     return false;
                 }
 
-                requisicoes.Add(new Requisicao(cliente, quantidadePessoas, mesa));
+                requisicoes.Add(new Requisicao(cliente, mesa, quantidadePessoas));
                 mesa.OcuparMesa();
             }
 
@@ -79,18 +84,39 @@ namespace POO
 
         private void ProcurarMesaParaRequisicao()
         {
-            Requisicao requisicao = filaDeEspera.Dequeue();
-            Mesa mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
-            if (mesa != null)
+            if (!filaDeEspera.Any())
+                return;
+
+            List<Guid> idsAtendidos = new List<Guid>();
+
+            foreach (var requisicao in filaDeEspera.ToArray())
             {
-                requisicoes.Add(new Requisicao(requisicao.GetCliente(), requisicao.GetQuantidadeDePessoas(), mesa));
-                mesa.OcuparMesa();
+                Mesa? mesaDisponivel = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
+                if (mesaDisponivel != null)
+                {
+                    requisicao.OcuparMesa(mesaDisponivel);
+                    requisicoes.Add(requisicao);
+                    idsAtendidos.Add(requisicao.GetCliente().GetIdCliente());
+                }
             }
-            else
+
+            Queue<Requisicao> filaAuxiliar = new Queue<Requisicao>();
+
+            while (filaDeEspera.Count > 0)
             {
-                filaDeEspera.Enqueue(requisicao);
+                Requisicao requisicao = filaDeEspera.Dequeue();
+                if (!idsAtendidos.Contains(requisicao.GetCliente().GetIdCliente()))
+                {
+                    filaAuxiliar.Enqueue(requisicao);
+                }
+            }
+
+            while (filaAuxiliar.Count > 0)
+            {
+                filaDeEspera.Enqueue(filaAuxiliar.Dequeue());
             }
         }
+
         private bool VerificarNumeroDePessoas(int quantidadePessoas)
         {
             return quantidadePessoas > 0 && quantidadePessoas <= 10;
@@ -107,5 +133,5 @@ namespace POO
         }
 
         #endregion
-    }
+    }
 }
