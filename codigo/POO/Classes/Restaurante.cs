@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System;
-
-sing System;
+using System;
 using System.Collections.Generic;
+using POO.Classes;
 
-namespace POO
+namespace POO.Classes
 {
     public class Restaurante
     {
@@ -19,54 +19,54 @@ namespace POO
         private List<Requisicao> requisicoes;
         private List<Mesa> mesas;
         private Queue<Requisicao> filaDeEspera;
+        private Cardapio cardapio;
+        public string Nome { get; }
 
         #endregion
 
         #region Construtor
 
-        public Restaurante()
+        public Restaurante(string nome)
         {
             requisicoes = new List<Requisicao>();
-            mesas = new List<Mesa>()
-            {
-
-            };
+            mesas = Mesa.GerarMesas();
             filaDeEspera = new Queue<Requisicao>();
+            Nome = nome;
+            cardapio = new Cardapio();
         }
-
+        
         #endregion
 
         #region Métodos Públicos
 
-        public bool AlocarMesa(Cliente cliente, int quantidadePessoas)
+        public bool AlocarMesa(Requisicao requisicao)
         {
-            Mesa? mesa;
-
-            if (!VerificarNumeroDePessoas(quantidadePessoas))
+            Mesa mesa;
+              
+            if (!VerificarNumeroDePessoas(requisicao.GetQuantidadeDePessoas()))
             {
                 throw new InvalidOperationException("Não há mesas para essa quantidade de pessoas!");
             }
 
             if (VerificarExistenciaMesasDisponiveis())
             {
-                mesa = ObterMesasDisponiveis(quantidadePessoas);
-
-                if (mesa == null)
-                {
-                    filaDeEspera.Enqueue(new Requisicao(cliente, quantidadePessoas));
-                    return false;
-                }
-
-                requisicoes.Add(new Requisicao(cliente, mesa, quantidadePessoas));
+                mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
+           
+                requisicoes.Add(requisicao);
                 mesa.OcuparMesa();
+            }
+            else
+            {
+                    filaDeEspera.Enqueue(requisicao);
+                    return false;    
             }
 
             return true;
         }
 
-        public bool RegistrarSaida(Guid idCliente)
+        public bool RegistrarSaida(Cliente client)
         {
-            Requisicao? requisicao = requisicoes.Find(r => r.GetCliente().GetIdCliente() == idCliente);
+            Requisicao? requisicao = requisicoes.Find(r => r.GetCliente().GetIdCliente() == client.GetIdCliente());
 
             if (requisicao == null)
             {
@@ -77,6 +77,8 @@ namespace POO
             ProcurarMesaParaRequisicao();
             return true;
         }
+
+        public Cardapio GetCardapio() => cardapio;
 
         #endregion
 
@@ -127,7 +129,7 @@ namespace POO
             return mesas.Find(m => m.GetDisponibilidade()) != null;
         }
 
-        private Mesa? ObterMesasDisponiveis(int quantidadePessoas)
+        private Mesa ObterMesasDisponiveis(int quantidadePessoas)
         {
             return mesas.Find(m => m.VerificarDisponibilidade(quantidadePessoas));
         }

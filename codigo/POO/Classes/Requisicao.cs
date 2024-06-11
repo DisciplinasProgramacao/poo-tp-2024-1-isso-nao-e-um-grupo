@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POO
+namespace POO.Classes
 {
     public class Requisicao
     {
@@ -22,7 +22,7 @@ namespace POO
         {
             dataDeEntrada = DateTime.Now;
             dadosDoCliente = cliente;
-            this.mesa = null;
+            mesa = null;
             this.numeroDePessoas = numeroDePessoas;
         }
 
