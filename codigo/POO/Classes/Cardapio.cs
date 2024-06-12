@@ -1,6 +1,4 @@
 using POO.Classes.NovaPasta;
-using System;
-using System.Xml.Linq;
 
 namespace POO.Classes
 {

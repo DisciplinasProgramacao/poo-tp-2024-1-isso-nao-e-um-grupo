@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-using System;
-using System.Collections.Generic;
-using POO.Classes;
+﻿using POO.Classes.NovaPasta;
 
 namespace POO.Classes
 {
@@ -78,7 +74,20 @@ namespace POO.Classes
             return true;
         }
 
-        public Cardapio GetCardapio() => cardapio;
+        public string GerarCardapio()
+        {
+            return cardapio.ExibirCardapio();
+        }
+
+        public ItemPedido PegarComida(int index)
+        {
+            return cardapio.EscolherComida(index);
+        }
+
+        public ItemPedido PegarBebida(int index)
+        {
+            return cardapio.EscolherComida(index);
+        }
 
         #endregion
 

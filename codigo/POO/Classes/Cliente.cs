@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace POO.Classes
 {
     public class Cliente
@@ -18,5 +13,6 @@ namespace POO.Classes
         }
 
         public Guid GetIdCliente() => idCliente;
+        public string GetNome() => nome;
     }
 }

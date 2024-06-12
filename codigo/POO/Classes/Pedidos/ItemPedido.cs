@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace POO.Classes.NovaPasta
+﻿namespace POO.Classes.NovaPasta
 {
     public abstract class ItemPedido
     {

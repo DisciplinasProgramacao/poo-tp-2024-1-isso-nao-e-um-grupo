@@ -1,24 +1,16 @@
-﻿using POO.Classes.NovaPasta;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace POO.Classes
+﻿namespace POO.Classes
 {
     public class Conta
     {
         public const decimal TAXA_DE_SERVICO = 0.1m;
         private Requisicao? requisicao;
-        private Pedido pedido;
+        private Pedido? pedido;
         private Guid IdConta;
         public bool Aberta { get; private set; } = true;
 
 
         public Conta()
         {
-            pedido = new Pedido();
             IdConta = Guid.NewGuid();
         }
         public Conta(Requisicao? requisicao, Pedido pedido, Guid idConta)
@@ -39,12 +31,26 @@ namespace POO.Classes
             return total / requisicao?.GetQuantidadeDePessoas() ?? 1;
         }
 
-        public void AdicionarRequisicao(Requisicao requisicao)
-        {
-            this.requisicao = requisicao;
-        }
+        public bool FecharConta() => Aberta = false;
 
+        public Cliente DadosCliente() => requisicao?.GetCliente() ?? throw new Exception("Cliente não existe");
+
+        #region getsEsets
+        public Requisicao? GetRequisicao() => requisicao;
+        public void SetRequisicao(Requisicao requisicao) => this.requisicao = requisicao;
         public Guid GetContaId() => IdConta;
-        public bool FecharConta => Aberta = false;
+        public Pedido? GetPedido() => pedido;
+        public void SetPedido(Pedido pedido) => this.pedido = pedido;
+
+        #endregion
+        public string GerarRelatorio()
+        {
+            return $"Total: {CalcularTotal()} | " + $"Total-Para-Cada-Pessoa: {ExibirValorDividido()} | " + 
+                $"Total-De-Pessoas: {requisicao?.GetQuantidadeDePessoas()}";
+        }
+        public override string ToString()
+        {
+            return $"{GetContaId()} | NomeCliente : {DadosCliente().GetNome()}";
+        }
     }
 }
