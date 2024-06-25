@@ -23,6 +23,7 @@ namespace POO.Classes.Estabelecimentos
         {
             get { return nome; }
         }
+
         public string ExibirCardapio()
         {
             return cardapio.ExibirCardapio();

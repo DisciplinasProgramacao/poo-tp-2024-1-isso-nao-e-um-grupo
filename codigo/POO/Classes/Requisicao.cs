@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace POO.Classes
+﻿namespace POO.Classes
 {
     public class Requisicao
     {
@@ -8,12 +6,13 @@ namespace POO.Classes
         private DateTime? dataSaida;
         private Cliente dadosDoCliente;
         private Mesa? mesa;
-        private int numeroDePessoas;
+        private int numeroDePessoas = 1;
 
         public Requisicao(Cliente cliente, Mesa mesa, int numeroDePessoas)
         {
             dataDeEntrada = DateTime.Now;
             dadosDoCliente = cliente;
+            mesa.OcuparMesa();
             this.mesa = mesa;
             this.numeroDePessoas = numeroDePessoas;
         }

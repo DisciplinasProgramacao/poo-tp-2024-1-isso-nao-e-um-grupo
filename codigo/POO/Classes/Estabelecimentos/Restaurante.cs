@@ -26,7 +26,7 @@ namespace POO.Classes.Estabelecimentos
 
         public bool AlocarMesa(Requisicao requisicao)
         {
-            Mesa mesa;
+            Mesa? mesa;
 
             if (!VerificarNumeroDePessoas(requisicao.GetQuantidadeDePessoas()))
             {
@@ -38,7 +38,7 @@ namespace POO.Classes.Estabelecimentos
                 mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
 
                 requisicoes.Add(requisicao);
-                mesa.OcuparMesa();
+                mesa?.OcuparMesa();
             }
             else
             {
