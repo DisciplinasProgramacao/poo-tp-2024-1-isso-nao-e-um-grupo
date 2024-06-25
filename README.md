@@ -2,8 +2,7 @@
 
 # Isso Não é Um Projeto
 
-Este projeto tem como objetivo colocar a disposição os trabalhos e atividades desenvolvidos na matéria de POO.
-Colocamos aqui todas as informações necessárias para que possamos ser avaliados, como os diagramas UML.
+O projeto consiste no desenvolvimento de um sistema integrado para gerenciar um restaurante e uma cafeteria. O sistema deve abranger funcionalidades de geração de pedidos e alocação de mesas, utilizando os princípios da Programação Orientada por Objetos (POO).
 
 ## Alunos integrantes da equipe
 
