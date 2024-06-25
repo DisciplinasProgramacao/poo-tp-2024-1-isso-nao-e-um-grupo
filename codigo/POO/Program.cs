@@ -308,7 +308,7 @@ public class Program
         if (mesaDisponivel == null)
         {
             Console.WriteLine("Não há mesas disponíveis!");
-            break;
+            return;
         }
 
         var Requisicao = new Requisicao(new Cliente("Cliente"), mesaDisponivel, 1);
