@@ -1,27 +1,15 @@
 using POO.Classes.NovaPasta;
+using POO.Interfaces;
 
-namespace POO.Classes
+namespace POO.Classes.Cardapios
 {
-    public class Cardapio
+    public class Cardapio : ICardapio
     {
-        public List<ItemPedido> ItensDoPedido { get; private set; }
+        protected List<ItemPedido> ItensDoPedido { get; set; }
 
         public Cardapio()
         {
-            ItensDoPedido = new List<ItemPedido>()
-                    {
-                        new Bebida("Água", 3.00m),
-                        new Bebida("Refrigerante orgânico", 7.00m),
-                        new Bebida("Copo de suco", 7.00m),
-                        new Bebida("Cerveja vegana", 9.00m),
-                        new Bebida("Taça de vinho vegano", 18.00m),
-                        new Comida("Moqueca de Palmito", 32.00m),
-                        new Comida("Falafel Assado", 20.00m),
-                        new Comida("Salada Primavera com Macarrão Konjac", 25.00m),
-                        new Comida("Escondidinho de Inhame", 18.00m),
-                        new Comida("Strogonoff de Cogumelos", 35.00m),
-                        new Comida("Caçarola de legumes", 22.00m)
-                    };
+            ItensDoPedido = new List<ItemPedido>();
         }
 
         public string ExibirCardapio()
@@ -53,7 +41,7 @@ namespace POO.Classes
 
         public ItemPedido EscolherComida(int IndexComida)
         {
-            return ItensDoPedido.Where(i => i is Comida).ElementAt(IndexComida-1);
+            return ItensDoPedido.Where(i => i is Comida).ElementAt(IndexComida - 1);
         }
 
         public ItemPedido EscolherBebida(int IndexBebida)

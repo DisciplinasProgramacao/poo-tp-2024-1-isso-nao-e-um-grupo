@@ -1,4 +1,5 @@
 ﻿using POO.Classes;
+using POO.Classes.Estabelecimentos;
 
 namespace ProgramRestaurante;
 
@@ -10,10 +11,11 @@ public class Program
     public static void Main()
     {
         contas = new List<Conta>();
-        Menu();
+
+        MenuRestaurante();
     }
 
-    public static void Menu() 
+    public static void MenuRestaurante()
     {
         Console.WriteLine($"Seja bem-vindo ao Restaurante - {NomeRestaurante}!");
         while (true)
@@ -23,7 +25,7 @@ public class Program
             Console.WriteLine("3 - Fazer Pedidos");
             Console.WriteLine("4 - Sair");
 
-            string opcao = Console.ReadLine()??"4";
+            string opcao = Console.ReadLine() ?? "4";
 
             switch (opcao)
             {
@@ -37,12 +39,12 @@ public class Program
                     FazerPedidos();
                     break;
                 case "4":
-                   
+
                     break;
                 default:
                     Console.WriteLine("Opção inválida!");
                     break;
-            }       
+            }
         }
     }
     #region Abrir Contas
@@ -56,14 +58,14 @@ public class Program
         int quantidadePessoas = int.Parse(Console.ReadLine() ?? "0");
 
         Console.WriteLine("Informe o nome do Cliente:");
-        string nome= Console.ReadLine() ?? "0";
+        string nome = Console.ReadLine() ?? "0";
 
-        
-        requisicao = new Requisicao(new Cliente(nome),quantidadePessoas);
+
+        requisicao = new Requisicao(new Cliente(nome), quantidadePessoas);
 
         restaurante.AlocarMesa(requisicao);
         Console.WriteLine("Mesa alocada com sucesso!\n" + "Agora pode-se selecionar a conta e fazer os pedidos!!!\n");
-        
+
         conta.SetRequisicao(requisicao);
         contas.Add(conta);
 
@@ -90,7 +92,7 @@ public class Program
             return;
         };
         int index = SelecionarIndexConta();
-        if (index == 0)return;
+        if (index == 0) return;
 
         try
         {
@@ -122,7 +124,7 @@ public class Program
         if (index == 0) return;
 
         var conta = SelecionarConta(index);
-      
+
         if (conta.GetPedido() != null)
         {
             AdicionarItemPedido(conta.GetPedido());
@@ -171,7 +173,7 @@ public class Program
         int index = int.Parse(Console.ReadLine() ?? "0");
         if (index == 0) return;
 
-        pedido.AdicionarItem(restaurante.PegarComida(index));
+        pedido.AdicionarItem(restaurante.EscolherComida(index));
         Console.WriteLine("Comida adicionada com sucesso!");
     }
 
@@ -183,7 +185,7 @@ public class Program
         int index = int.Parse(Console.ReadLine() ?? "0");
         if (index == 0) return;
 
-        pedido.AdicionarItem(restaurante.PegarBebida(index));
+        pedido.AdicionarItem(restaurante.EscolherBebida(index));
         Console.WriteLine("Bebida adicionada com sucesso!");
     }
     #endregion
@@ -222,9 +224,9 @@ public class Program
     private static void ExibirCardapio()
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(restaurante.GerarCardapio());
+        Console.WriteLine(restaurante.ExibirCardapio());
         Console.ResetColor();
-    }   
+    }
 
     private static void MenuPedido()
     {
