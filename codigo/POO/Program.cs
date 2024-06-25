@@ -11,12 +11,10 @@ public class Program
     private static Restaurante restaurante { get; set; } = new Restaurante(NomeRestaurante);
     private static Cafeteria cafeteria { get; set; } = new Cafeteria(NomeCafeteria);
 
-    private static List<Conta>? contas;
+    private static List<Conta>? contas = new List<Conta>();
 
     public static void Main()
     {
-        contas = new List<Conta>();
-
         MenuGeral();
     }
 
