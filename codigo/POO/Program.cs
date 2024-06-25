@@ -171,7 +171,7 @@ public class Program
         int index = int.Parse(Console.ReadLine() ?? "0");
         if (index == 0) return;
 
-        pedido.AdicionarItem(restaurante.PegarBebida(index));
+        pedido.AdicionarItem(restaurante.PegarComida(index));
         Console.WriteLine("Comida adicionada com sucesso!");
     }
 

@@ -45,7 +45,7 @@
         #endregion
         public string GerarRelatorio()
         {
-            return $"Total: {CalcularTotal()} | " + $"Total-Para-Cada-Pessoa: {ExibirValorDividido()} | " + 
+            return $"Total: R$ {CalcularTotal()} | " + $"Total-Para-Cada-Pessoa: R$ {ExibirValorDividido()} | " + 
                 $"Total-De-Pessoas: {requisicao?.GetQuantidadeDePessoas()}";
         }
         public override string ToString()

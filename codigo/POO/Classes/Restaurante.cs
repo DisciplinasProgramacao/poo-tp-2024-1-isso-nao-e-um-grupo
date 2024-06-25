@@ -86,7 +86,7 @@ namespace POO.Classes
 
         public ItemPedido PegarBebida(int index)
         {
-            return cardapio.EscolherComida(index);
+            return cardapio.EscolherBebida(index);
         }
 
         #endregion
