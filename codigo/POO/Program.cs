@@ -8,16 +8,18 @@ public class Program
     private const string NomeRestaurante = "Isso Não é Um Restaurante";
     private const string NomeCafeteria = "Isso Não é Uma Cafeteria";
 
-    private static Restaurante restaurante { get; set; } = new Restaurante(NomeRestaurante);
-    private static Cafeteria cafeteria { get; set; } = new Cafeteria(NomeCafeteria);
-
-    private static List<Conta>? contas = new List<Conta>();
+    private static Estabelecimento estabelecimento;
 
     public static void Main()
     {
         MenuGeral();
     }
-
+    private static void CafeteriaPedidos()
+    {
+        var requisicao = FazerRequisicao();
+        FazerPedidos(requisicao);
+        FecharRequisicao();
+    }
     #region Menus
     public static void MenuGeral()
     {
@@ -33,9 +35,11 @@ public class Program
             switch (opcao)
             {
                 case "1":
+                    estabelecimento = new Restaurante(NomeRestaurante);
                     MenuRestaurante();
                     break;
                 case "2":
+                    estabelecimento = new Cafeteria(NomeCafeteria);
                     MenuCafeteria();
                     break;
                 case "3":
@@ -78,8 +82,8 @@ public class Program
         Console.WriteLine($"Seja bem-vindo ao Restaurante - {NomeRestaurante}!");
         while (true)
         {
-            Console.WriteLine("1 - Abrir Conta");
-            Console.WriteLine("2 - Fechar Conta");
+            Console.WriteLine("1 - Fazer Requisicao");
+            Console.WriteLine("2 - Fechar Requisicao");
             Console.WriteLine("3 - Fazer Pedidos");
             Console.WriteLine("4 - Sair");
 
@@ -88,13 +92,13 @@ public class Program
             switch (opcao)
             {
                 case "1":
-                    AbrirConta();
+                    FazerRequisicao();
                     break;
                 case "2":
-                    FecharConta();
+                    FecharRequisicao();
                     break;
                 case "3":
-                    FazerPedidos(restaurante);
+                    FazerPedidos();
                     break;
                 case "4":
                     return;
@@ -107,182 +111,140 @@ public class Program
 
     #endregion 
 
-    #region Abrir Contas
-    public static void AbrirConta()
+    #region Abrir Requisicao
+    public static Requisicao FazerRequisicao()
     {
-        var conta = new Conta();
         Requisicao requisicao;
+        bool result;
 
-        Console.WriteLine("Para se abrir uma Conta, antes deve-se fazer uma requisição de mesa.");
+        Console.WriteLine("São quantas pessoas?");
         Console.WriteLine("Informe a quantidade de pessoas: ");
         int quantidadePessoas = int.Parse(Console.ReadLine() ?? "0");
 
         Console.WriteLine("Informe o nome do Cliente:");
         string nome = Console.ReadLine() ?? "0";
 
-
         requisicao = new Requisicao(new Cliente(nome), quantidadePessoas);
-
-        restaurante.AlocarMesa(requisicao);
-        Console.WriteLine("Mesa alocada com sucesso!\n" + "Agora pode-se selecionar a conta e fazer os pedidos!!!\n");
-
-        conta.SetRequisicao(requisicao);
-        contas?.Add(conta);
-
-        Console.WriteLine($"Conta aberta com sucesso! Número da conta: {conta.GetContaId()}");
-    }
-    #endregion
-
-    #region Remoção de Conta
-    private static Conta RemoverConta(int index)
-    {
-        var conta = contas?.ElementAt(index - 1);
-        restaurante.RegistrarSaida(conta?.DadosCliente());
-        conta.FecharConta();
-        return conta;
-    }
-
-    private static void FecharConta()
-    {
-        Conta contafechada;
-
-        if (VerificarContasAbertas())
-        {
-            Console.WriteLine("Não há contas abertas!");
-            return;
-        };
-        int index = SelecionarIndexConta();
-        if (index == 0) return;
 
         try
         {
-            contafechada = RemoverConta(index);
+            result = estabelecimento.AlocarMesa(requisicao);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e.Message);
-            return;
+            Console.WriteLine("Quantidade de pessoas inválida! " + ex.Message);
+            return null;
         }
 
-        Console.WriteLine("Conta fechada com sucesso!\n" + $"Conta fechada: {contafechada?.ToString()}");
-        return;
+        Console.Clear();
+        return requisicao;
+    }
+    #endregion
+
+    #region Remoção de Requisicao
+
+    private static void FecharRequisicao()
+    {
+        try
+        {
+            Console.Clear();
+            Console.WriteLine("Informe o número da mesa:");
+            Console.WriteLine(estabelecimento.RequisicoesAtivas());
+
+            int numeroDaMesa = int.Parse(Console.ReadLine() ?? "0");
+            var requisicao = estabelecimento.RegistrarSaida(numeroDaMesa);
+
+            Console.WriteLine("Requisicao fechada com sucesso! Abaixo o relatório! \n");
+            Console.WriteLine(requisicao?.RelatorioConta());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
     #endregion
 
     #region Pedidos
-    public static void FazerPedidos(Estabelecimento estabelecimento)
+    public static void FazerPedidos()
     {
-        Pedido pedido;
 
-        if (VerificarContasAbertas())
+        Pedido pedido = new Pedido();
+        Requisicao? requisicao = null;
+
+        try
         {
-            Console.WriteLine("Não há contas abertas!");
+            pedido = AdicionarItemPedido();
+
+            Console.WriteLine("Informe o número da mesa.");
+            Console.WriteLine(estabelecimento.RequisicoesAtivas());
+            int numeroDaMesa = int.Parse(Console.ReadLine() ?? "0");
+            requisicao = estabelecimento.AdicionarPedido(numeroDaMesa, pedido);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
             return;
-        };
-
-        int index = SelecionarIndexConta();
-        if (index == 0) return;
-
-        var conta = SelecionarConta(index);
-
-        if (conta?.GetPedido() != null)
-        {
-            AdicionarItemPedido(conta.GetPedido(), estabelecimento);
-        }
-        else
-        {
-            pedido = new Pedido();
-            AdicionarItemPedido(pedido, estabelecimento);
-            conta?.SetPedido(pedido);
         }
 
-        Console.WriteLine(conta?.GerarRelatorio());
+        Console.WriteLine(requisicao.RelatorioConta());
     }
 
-    private static void AdicionarItemPedido(Pedido pedido, Estabelecimento estabelecimento)
+    public static void FazerPedidos(Requisicao requisicao)
     {
-        string opcao;
-        bool loop = true;
+        var pedido = new Pedido();
 
-        ExibirCardapio(estabelecimento);
-        while (loop)
+        try
         {
+            pedido = AdicionarItemPedido();
+            requisicao.DefinirPedido(pedido);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return;
+        }
+        Console.WriteLine(requisicao.RelatorioConta());
+    }
+
+    private static Pedido AdicionarItemPedido()
+    {
+        string opcao = "";
+        Pedido p = new Pedido();
+
+        while (!opcao.Equals("F"))
+        {
+            ExibirCardapio(estabelecimento);
             MenuPedido();
             opcao = Console.ReadLine() ?? "F";
             switch (opcao)
             {
-                case "C":
-                    AdicionarComida(pedido, estabelecimento);
+                case "P":
+                    p = AdicionarAoPedido();
                     break;
-                case "B":
-                    AdicionarBebida(pedido, estabelecimento);
-                    break;
-                case "F":
-                    loop = false;
-                    return;
                 default:
-                    Console.WriteLine("Opção inválida!");
                     break;
             }
         }
+        return p;
     }
-    private static void AdicionarComida(Pedido pedido, Estabelecimento estabelecimento)
+    private static Pedido AdicionarAoPedido()
     {
-        Console.WriteLine("Informe o número da comida (O primeiro número do lado esquerdo)" +
+        var pedido = new Pedido();
+        Console.WriteLine("Informe o número do Item (O primeiro número do lado esquerdo)" +
          "insira 0 se quiser nada");
 
         int index = int.Parse(Console.ReadLine() ?? "0");
-        if (index == 0) return;
+        if (index == 0) return null;
 
-        pedido.AdicionarItem(estabelecimento.EscolherComida(index));
+        pedido.AdicionarItem(estabelecimento.EscolherItemPedido(index));
         Console.WriteLine("Comida adicionada com sucesso!");
+        Console.Clear();
+        return pedido;
     }
 
-    private static void AdicionarBebida(Pedido pedido, Estabelecimento estabelecimento)
-    {
-        Console.WriteLine("Informe o número da bebida (O primeiro número do lado esquerdo)," +
-         "insira 0 se quiser nada");
-
-        int index = int.Parse(Console.ReadLine() ?? "0");
-        if (index == 0) return;
-
-        pedido.AdicionarItem(estabelecimento.EscolherBebida(index));
-        Console.WriteLine("Bebida adicionada com sucesso!");
-    }
     #endregion
 
     #region Auxiliares
-
-    private static void ExibirContas()
-    {
-        int i = 1;
-        foreach (var conta in contas)
-        {
-            if (conta.Aberta)
-            {
-                Console.WriteLine($"{i} - {conta.ToString()}");
-                i++;
-            }
-        }
-    }
-
-    private static int SelecionarIndexConta()
-    {
-        ExibirContas();
-        Console.WriteLine("Informe o número da conta (O primeiro número do lado esquerdo)," +
-           "insira 0 senão existir a conta correspondente");
-        return int.Parse(Console.ReadLine() ?? "0");
-    }
-
-    private static Conta? SelecionarConta(int index)
-    {
-        return contas?.ElementAt(index - 1);
-    }
-
-    private static bool VerificarContasAbertas()
-    {
-        return contas?.FirstOrDefault(c => c.Aberta == true) == null;
-    }
 
     private static void ExibirCardapio(Estabelecimento estabelecimento)
     {
@@ -294,31 +256,10 @@ public class Program
     private static void MenuPedido()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("Deseja bebida ou comida?\n" +
-            "C . Para comida\n" +
-            "B . Para bebida\n" +
-            "F . Para fechar o pedido\n");
+        Console.WriteLine("Qual o Pedido?\n" +
+            "P . Para selecionar\n" +
+            "F . Para fechar o pedido");
         Console.ResetColor();
-    }
-
-    private static void CafeteriaPedidos()
-    {
-        var mesaDisponivel = cafeteria.ObterMesasDisponiveis(1);
-
-        if (mesaDisponivel == null)
-        {
-            Console.WriteLine("Não há mesas disponíveis!");
-            return;
-        }
-
-        var Requisicao = new Requisicao(new Cliente("Cliente"), mesaDisponivel, 1);
-        var pedido = new Pedido();
-        var Conta = new Conta(Requisicao, pedido, Guid.NewGuid());
-
-        contas?.Add(Conta);
-        AdicionarItemPedido(pedido, cafeteria);
-        Console.WriteLine(Conta?.GerarRelatorio());
-        Conta?.FecharConta();
     }
     #endregion
 }

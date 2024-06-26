@@ -7,7 +7,6 @@ namespace POO.Classes.Estabelecimentos
 
         #region Atributos
 
-        private List<Requisicao> requisicoes;
         private Queue<Requisicao> filaDeEspera;
 
         #endregion
@@ -16,7 +15,6 @@ namespace POO.Classes.Estabelecimentos
 
         public Restaurante(string nome) : base(nome, new CardapioRestaurante(), Mesa.GerarMesas())
         {
-            requisicoes = new List<Requisicao>();
             filaDeEspera = new Queue<Requisicao>();
         }
 
@@ -24,7 +22,7 @@ namespace POO.Classes.Estabelecimentos
 
         #region Métodos Públicos
 
-        public bool AlocarMesa(Requisicao requisicao)
+        public override bool AlocarMesa(Requisicao requisicao)
         {
             Mesa? mesa;
 
@@ -33,10 +31,11 @@ namespace POO.Classes.Estabelecimentos
                 throw new InvalidOperationException("Não há mesas para essa quantidade de pessoas!");
             }
 
-            if (VerificarExistenciaMesasDisponiveis())
-            {
-                mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
+            mesa = ObterMesasDisponiveis(requisicao.GetQuantidadeDePessoas());
 
+            if (mesa != null)
+            {
+                requisicao.OcuparMesa(mesa);
                 requisicoes.Add(requisicao);
                 mesa?.OcuparMesa();
             }
@@ -49,18 +48,24 @@ namespace POO.Classes.Estabelecimentos
             return true;
         }
 
-        public bool RegistrarSaida(Cliente client)
+        public override Requisicao AdicionarPedido(int numeroDaMesa, Pedido pedido)
         {
-            Requisicao? requisicao = requisicoes.Find(r => r.GetCliente().GetIdCliente() == client.GetIdCliente());
+            Requisicao? requisicao = EscolherRequisicao(numeroDaMesa);
 
             if (requisicao == null)
             {
-                return false;
+                throw new Exception("Não existe Requisicao para esse número de mesa!");
             }
 
-            requisicao.FecharRequisicao();
+            requisicao.DefinirPedido(pedido);
+            return requisicao;
+        }
+
+        public override Requisicao? RegistrarSaida(int numeroDaMesa)
+        {
+            var response = base.RegistrarSaida(numeroDaMesa);
             ProcurarMesaParaRequisicao();
-            return true;
+            return response;
         }
 
         #endregion
@@ -104,7 +109,7 @@ namespace POO.Classes.Estabelecimentos
 
         private bool VerificarNumeroDePessoas(int quantidadePessoas)
         {
-            return quantidadePessoas > 0 && quantidadePessoas <= 10;
+            return quantidadePessoas > 0 && quantidadePessoas <= 8;
         }
         #endregion
     }

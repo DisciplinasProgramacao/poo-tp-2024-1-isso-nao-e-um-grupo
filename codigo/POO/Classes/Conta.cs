@@ -3,7 +3,7 @@
     public class Conta
     {
         public const decimal TAXA_DE_SERVICO = 0.1m;
-        private Requisicao? requisicao;
+
         private Pedido? pedido;
         private Guid IdConta;
         public bool Aberta { get; private set; } = true;
@@ -13,44 +13,36 @@
         {
             IdConta = Guid.NewGuid();
         }
-        public Conta(Requisicao? requisicao, Pedido pedido, Guid idConta)
+        public Conta(Pedido pedido, Guid idConta)
         {
-            this.requisicao = requisicao;
             this.pedido = pedido;
             IdConta = idConta;
         }
 
         public decimal CalcularTotal()
         {
-            var total = pedido.CalcularTotal();
+            var total = pedido?.CalcularTotal() ?? 0;
             return total + total * TAXA_DE_SERVICO;
         }
-        public decimal ExibirValorDividido()
+        public decimal ExibirValorDividido(int TotalPessoas)
         {
             var total = CalcularTotal();
-            return total / requisicao?.GetQuantidadeDePessoas() ?? 1;
+            return total / TotalPessoas;
         }
 
         public bool FecharConta() => Aberta = false;
 
-        public Cliente DadosCliente() => requisicao?.GetCliente() ?? throw new Exception("Cliente não existe");
-
         #region getsEsets
-        public Requisicao? GetRequisicao() => requisicao;
-        public void SetRequisicao(Requisicao requisicao) => this.requisicao = requisicao;
+
         public Guid GetContaId() => IdConta;
         public Pedido? GetPedido() => pedido;
         public void SetPedido(Pedido pedido) => this.pedido = pedido;
 
         #endregion
-        public string GerarRelatorio()
+        public string GerarRelatorio(int qtdPessoas)
         {
-            return $"Total: R$ {CalcularTotal()} | " + $"Total-Para-Cada-Pessoa: R$ {ExibirValorDividido()} | " + 
-                $"Total-De-Pessoas: {requisicao?.GetQuantidadeDePessoas()}";
-        }
-        public override string ToString()
-        {
-            return $"{GetContaId()} | NomeCliente : {DadosCliente().GetNome()}";
+            return $"Total: R$ {CalcularTotal()} | " + $"Total-Para-Cada-Pessoa: R$ {ExibirValorDividido(qtdPessoas)} | " +
+                $"Total-De-Pessoas: {qtdPessoas}";
         }
     }
 }

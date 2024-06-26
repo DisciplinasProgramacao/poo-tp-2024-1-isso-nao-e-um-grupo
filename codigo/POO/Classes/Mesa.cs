@@ -1,6 +1,6 @@
 namespace POO.Classes
 {
-    public class Mesa 
+    public class Mesa
     {
         private static int proximaMesa = 1;
         private int capacidade;
@@ -9,12 +9,14 @@ namespace POO.Classes
 
         public Mesa(int capacidade)
         {
+            proximaMesa = proximaMesa == 11 ? 1 : proximaMesa;
             this.capacidade = capacidade;
             numeroDaMesa = proximaMesa;
             disponibilidade = true;
             proximaMesa++;
+
         }
-       
+
         public void OcuparMesa() => disponibilidade = false;
         public void DesocuparMesa() => disponibilidade = true;
         public bool VerificarDisponibilidade(int quantidadePessoas) => disponibilidade ? quantidadePessoas <= capacidade : false;

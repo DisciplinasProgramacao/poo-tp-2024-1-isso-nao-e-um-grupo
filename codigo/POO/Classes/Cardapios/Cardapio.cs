@@ -18,35 +18,15 @@ namespace POO.Classes.Cardapios
             int i = 1;
             foreach (ItemPedido item in ItensDoPedido)
             {
-                if (item is Comida)
-                {
-                    cardapio += i + ". " + item.ToString() + "\n";
-                    i++;
-                }
+                cardapio += i + ". " + item.ToString() + "\n";
+                i++;
             }
-
-            i = 1;
-            cardapio += "\nBebidas: \n\n";
-            foreach (ItemPedido item in ItensDoPedido)
-            {
-                if (item is Bebida)
-                {
-                    cardapio += i + ". " + item.ToString() + "\n";
-                    i++;
-                }
-            }
-
             return cardapio;
         }
 
-        public ItemPedido EscolherComida(int IndexComida)
+        public ItemPedido EscolherItemPedido(int IndexComida)
         {
-            return ItensDoPedido.Where(i => i is Comida).ElementAt(IndexComida - 1);
-        }
-
-        public ItemPedido EscolherBebida(int IndexBebida)
-        {
-            return ItensDoPedido.Where(i => i is Bebida).ElementAt(IndexBebida - 1);
+            return ItensDoPedido.ElementAt(IndexComida - 1);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace POO.Classes.Estabelecimentos
         protected List<Mesa> mesas = new List<Mesa>();
         protected Cardapio cardapio;
         protected string nome;
-
+        protected List<Requisicao> requisicoes = new List<Requisicao>();
         public Estabelecimento(string _nome, Cardapio _cardapio, List<Mesa> _mesas)
         {
             nome = _nome;
@@ -29,22 +29,53 @@ namespace POO.Classes.Estabelecimentos
             return cardapio.ExibirCardapio();
         }
 
-        public ItemPedido EscolherBebida(int index)
+        public ItemPedido EscolherItemPedido(int index)
         {
-            return cardapio.EscolherBebida(index);
+            return cardapio.EscolherItemPedido(index);
         }
 
-        public ItemPedido EscolherComida(int index)
+        public abstract bool AlocarMesa(Requisicao requisicao);
+
+        public virtual Requisicao? RegistrarSaida(int numeroDaMesa)
         {
-            return cardapio.EscolherComida(index);
+            var requisicao = EscolherRequisicao(numeroDaMesa);
+
+            if (requisicao != null)
+            {
+                requisicao.FecharRequisicao();
+                requisicao.FecharConta();
+
+                return requisicao;
+            }
+            throw new Exception("Não existe Requisicao para esse número de mesa!");
         }
 
-        public bool VerificarExistenciaMesasDisponiveis()
+        public abstract Requisicao AdicionarPedido(int numeroDaMesa, Pedido pedido);
+
+        public string RequisicoesAtivas()
+        {
+            var requisicoesComMesa = requisicoes.Where(r => r.EstaSendoAtendida);
+
+            string relatorio = "";
+
+            foreach (var requisicao in requisicoesComMesa)
+            {
+                relatorio += "\n" + requisicao.GerarRelatorioDaRequisicao();
+            }
+
+            return relatorio;
+        }
+
+        protected Requisicao? EscolherRequisicao(int numeroDaMesa)
+        {
+            return requisicoes.Find(r => r.GetNumeroDaMesa() == numeroDaMesa && r.GetNumeroDaMesa() != 0);
+        }
+        protected bool VerificarExistenciaMesasDisponiveis()
         {
             return mesas.Find(m => m.GetDisponibilidade()) != null;
         }
 
-        public Mesa? ObterMesasDisponiveis(int quantidadePessoas)
+        protected Mesa? ObterMesasDisponiveis(int quantidadePessoas)
         {
             return mesas.Find(m => m.VerificarDisponibilidade(quantidadePessoas));
         }
