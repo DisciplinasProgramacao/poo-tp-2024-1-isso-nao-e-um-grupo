@@ -19,11 +19,6 @@ namespace POO.Classes.Estabelecimentos
             mesas = _mesas;
         }
 
-        public string Nome
-        {
-            get { return nome; }
-        }
-
         public string ExibirCardapio()
         {
             return cardapio.ExibirCardapio();
@@ -69,10 +64,6 @@ namespace POO.Classes.Estabelecimentos
         protected Requisicao? EscolherRequisicao(int numeroDaMesa)
         {
             return requisicoes.Find(r => r.GetNumeroDaMesa() == numeroDaMesa && r.GetNumeroDaMesa() != 0);
-        }
-        protected bool VerificarExistenciaMesasDisponiveis()
-        {
-            return mesas.Find(m => m.GetDisponibilidade()) != null;
         }
 
         protected Mesa? ObterMesasDisponiveis(int quantidadePessoas)
