@@ -4,9 +4,7 @@ namespace POO.Classes.Estabelecimentos
 {
     public class Cafeteria : Estabelecimento
     {
-        public Cafeteria(string _nome) : base(_nome, new CardapioCafeteria(), Mesa.GerarMesas())
-        {
-        }
+        public Cafeteria(string _nome) : base(_nome, new CardapioCafeteria(), Mesa.GerarMesas()){ }
 
         public override bool AlocarMesa(Requisicao requisicao)
         {
@@ -24,6 +22,7 @@ namespace POO.Classes.Estabelecimentos
             {
                 throw new Exception("Não há mesas disponíveis!");
             }
+
             return true;
         }
 
@@ -33,7 +32,7 @@ namespace POO.Classes.Estabelecimentos
 
             if (requisicao == null)
             {
-                throw new Exception("Não existe Requisicao para esse número de mesa!");
+                throw new Exception("Não existe requisicão para esse número de mesa!");
             }
 
             requisicao.DefinirPedido(pedido);

@@ -30,7 +30,6 @@
             this.conta = conta != null ? conta : new Conta();
         }
 
-        #region Gets
         public int GetQuantidadeDePessoas()
         {
             return numeroDePessoas;
@@ -46,16 +45,17 @@
             return mesa?.GetNumeroDaMesa() ?? 0;
         }
 
-        #endregion
         public bool OcuparMesa(Mesa mesa)
         {
             if (this.mesa != null)
             {
                 throw new InvalidOperationException("A mesa já está ocupada.");
             }
+
             this.mesa = mesa;
             this.mesa?.OcuparMesa();
             EstaSendoAtendida = true;
+
             return true;
         }
 
@@ -68,6 +68,7 @@
                 mesa.DesocuparMesa();
                 mesa = null;
             }
+
             EstaSendoAtendida = false;
         }
 
@@ -102,10 +103,12 @@
                 throw new InvalidOperationException("A requisição já foi fechada.");
             }
         }
+
         private string MesaAlocada()
         {
             return mesa != null ? $"Mesa {mesa.GetNumeroDaMesa()}" : "Sem mesa alocada";
         }
+
         public string GerarRelatorioDaRequisicao()
         {
             return $"Nome: {dadosDoCliente.GetNome()} " + "|" + $" MesaAlocada: {MesaAlocada()}";

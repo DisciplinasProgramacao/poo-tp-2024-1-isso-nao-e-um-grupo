@@ -14,13 +14,14 @@ namespace POO.Classes.Cardapios
 
         public string ExibirCardapio()
         {
-            string cardapio = "Cardápio:\n\n" + "Comidas: \n\n";
+            string cardapio = "\nCardápio\n\n";
             int i = 1;
             foreach (ItemPedido item in ItensDoPedido)
             {
                 cardapio += i + ". " + item.ToString() + "\n";
                 i++;
             }
+
             return cardapio;
         }
 

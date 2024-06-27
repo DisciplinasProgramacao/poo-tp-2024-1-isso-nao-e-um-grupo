@@ -12,6 +12,7 @@
         }
 
         public string GetNome() => nome;
+
         public decimal GetPreco() => preco;
 
         public override string ToString()

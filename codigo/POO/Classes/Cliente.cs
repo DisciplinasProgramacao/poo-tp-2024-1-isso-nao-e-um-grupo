@@ -13,6 +13,7 @@ namespace POO.Classes
         }
 
         public Guid GetIdCliente() => idCliente;
+
         public string GetNome() => nome;
     }
 }
