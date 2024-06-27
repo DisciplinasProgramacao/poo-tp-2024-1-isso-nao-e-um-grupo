@@ -15,24 +15,32 @@ public class Program
     {
         MenuGeral();
     }
+
     private static void CafeteriaPedidos()
     {
         var requisicao = FazerRequisicao();
+
         FazerPedidos(requisicao);
         FecharRequisicao();
     }
+
     #region Menus
+
     public static void MenuGeral()
     {
-        while (true)
+        string opcao;
+
+        do
         {
             Console.Clear();
             Console.WriteLine($"Seja bem-vindo! Qual seu estabelecimento?");
             Console.WriteLine("1 - Restaurante");
             Console.WriteLine("2 - Cafeteria");
             Console.WriteLine("3 - Sair");
+            Console.Write("Digite uma opção: ");
 
-            string opcao = Console.ReadLine() ?? "3";
+            opcao = Console.ReadLine() ?? "3";
+
             switch (opcao)
             {
                 case "1":
@@ -46,22 +54,26 @@ public class Program
                 case "3":
                     return;
                 default:
-                    Console.WriteLine("Opção inválida!");
+                    Console.WriteLine("Opção inválida!\n");
                     break;
             }
-        }
+        } while (opcao != "3");
     }
 
     public static void MenuCafeteria()
     {
+        Console.Clear();
         Console.WriteLine($"Seja bem-vindo à Cafeteria - {NomeCafeteria}!");
 
-        while (true)
+        string opcao;
+
+        do
         {
             Console.WriteLine("1 - Fazer Pedidos");
             Console.WriteLine("2 - Sair");
+            Console.Write("Digite uma opção: ");
 
-            string opcao = Console.ReadLine() ?? "";
+            opcao = Console.ReadLine() ?? "2";
 
             switch (opcao)
             {
@@ -71,24 +83,28 @@ public class Program
                 case "2":
                     return;
                 default:
-                    Console.WriteLine("Opção inválida!");
+                    Console.WriteLine("Opção inválida!\n");
                     break;
             }
-        }
-
+        } while (opcao != "2");
     }
 
     public static void MenuRestaurante()
     {
+        Console.Clear();
         Console.WriteLine($"Seja bem-vindo ao Restaurante - {NomeRestaurante}!");
-        while (true)
+
+        string opcao;
+
+        do
         {
             Console.WriteLine("1 - Fazer Requisicao");
             Console.WriteLine("2 - Fechar Requisicao");
             Console.WriteLine("3 - Fazer Pedidos");
             Console.WriteLine("4 - Sair");
+            Console.Write("Digite uma opção: ");
 
-            string opcao = Console.ReadLine() ?? "4";
+            opcao = Console.ReadLine() ?? "4";
 
             switch (opcao)
             {
@@ -104,42 +120,51 @@ public class Program
                 case "4":
                     return;
                 default:
-                    Console.WriteLine("Opção inválida!");
+                    Console.WriteLine("Opção inválida!\n");
                     break;
             }
-        }
+        } while (opcao != "4");
     }
 
     #endregion 
 
     #region Abrir Requisicao
+
     public static Requisicao FazerRequisicao()
     {
         Requisicao requisicao;
         bool result;
 
-        Console.WriteLine("São quantas pessoas?");
-        Console.WriteLine("Informe a quantidade de pessoas: ");
-        int quantidadePessoas = int.Parse(Console.ReadLine() ?? "0");
+        Console.WriteLine("\nSão quantas pessoas?");
+        Console.Write("Informe a quantidade de pessoas: ");
 
-        Console.WriteLine("Informe o nome do Cliente:");
-        string nome = Console.ReadLine() ?? "0";
-
-        requisicao = new Requisicao(new Cliente(nome), quantidadePessoas);
+        int quantidadePessoas;
 
         try
         {
+            quantidadePessoas = int.Parse(Console.ReadLine() ?? "0");
+
+            Console.Write("Informe o nome do cliente: ");
+            string nome = Console.ReadLine() ?? "0";
+
+            requisicao = new Requisicao(new Cliente(nome), quantidadePessoas);
+
             result = estabelecimento.AlocarMesa(requisicao);
         }
+
         catch (Exception ex)
         {
-            Console.WriteLine("Quantidade de pessoas inválida! " + ex.Message);
+            Console.WriteLine(ex.Message);
+            Console.WriteLine();
+
             return null;
         }
 
         Console.Clear();
+
         return requisicao;
     }
+
     #endregion
 
     #region Remoção de Requisicao
@@ -149,23 +174,26 @@ public class Program
         try
         {
             Console.Clear();
-            Console.WriteLine("Informe o número da mesa:");
-            Console.WriteLine(estabelecimento.RequisicoesAtivas());
+            Console.Write(estabelecimento.RequisicoesAtivas());
+            Console.Write("\nInforme o número da mesa: ");
 
             int numeroDaMesa = int.Parse(Console.ReadLine() ?? "0");
             var requisicao = estabelecimento.RegistrarSaida(numeroDaMesa);
 
-            Console.WriteLine("Requisicao fechada com sucesso! Abaixo o relatório! \n");
+            Console.WriteLine("Requisição fechada com sucesso! Abaixo o relatório! \n");
             Console.WriteLine(requisicao?.RelatorioConta());
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            Console.WriteLine();
         }
     }
+
     #endregion
 
     #region Pedidos
+
     public static void FazerPedidos()
     {
 
@@ -176,14 +204,18 @@ public class Program
         {
             pedido = AdicionarItemPedido();
 
-            Console.WriteLine("Informe o número da mesa.");
             Console.WriteLine(estabelecimento.RequisicoesAtivas());
+            Console.Write("\nInforme o número da mesa: ");
+
             int numeroDaMesa = int.Parse(Console.ReadLine() ?? "0");
+
             requisicao = estabelecimento.AdicionarPedido(numeroDaMesa, pedido);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            Console.WriteLine();
+
             return;
         }
 
@@ -202,8 +234,11 @@ public class Program
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            Console.WriteLine();
+
             return;
         }
+
         Console.WriteLine(requisicao.RelatorioConta());
     }
 
@@ -212,11 +247,13 @@ public class Program
         string opcao = "";
         Pedido p = new Pedido();
 
-        while (!opcao.Equals("F"))
+        do
         {
             ExibirCardapio(estabelecimento);
             MenuPedido();
+
             opcao = Console.ReadLine() ?? "F";
+
             switch (opcao)
             {
                 case "P":
@@ -225,7 +262,8 @@ public class Program
                 default:
                     break;
             }
-        }
+        } while (opcao != "F");
+
         return p;
     }
     private static ItemPedido AdicionarAoPedido()
@@ -234,7 +272,9 @@ public class Program
          "insira 0 se quiser nada");
 
         int index = int.Parse(Console.ReadLine() ?? "0");
-        if (index == 0) return null;
+
+        if (index == 0)
+            return null;
 
         var item = estabelecimento.EscolherItemPedido(index);
         Console.WriteLine("Comida adicionada com sucesso!");
@@ -261,5 +301,6 @@ public class Program
             "F . Para fechar o pedido");
         Console.ResetColor();
     }
+
     #endregion
 }

@@ -2,10 +2,7 @@
 {
     public class Comida : ItemPedido
     {
-        public Comida(string nome, decimal preco) : base(nome, preco)
-        {
-
-        }
+        public Comida(string nome, decimal preco) : base(nome, preco){}
     }
  
 }

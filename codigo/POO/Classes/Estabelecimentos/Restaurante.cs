@@ -42,6 +42,7 @@ namespace POO.Classes.Estabelecimentos
             else
             {
                 filaDeEspera.Enqueue(requisicao);
+
                 return false;
             }
 
@@ -54,10 +55,11 @@ namespace POO.Classes.Estabelecimentos
 
             if (requisicao == null)
             {
-                throw new Exception("Não existe Requisicao para esse número de mesa!");
+                throw new Exception("Não existe requisição para esse número de mesa!");
             }
 
             requisicao.DefinirPedido(pedido);
+
             return requisicao;
         }
 
@@ -65,6 +67,7 @@ namespace POO.Classes.Estabelecimentos
         {
             var response = base.RegistrarSaida(numeroDaMesa);
             ProcurarMesaParaRequisicao();
+
             return response;
         }
 
@@ -111,6 +114,7 @@ namespace POO.Classes.Estabelecimentos
         {
             return quantidadePessoas > 0 && quantidadePessoas <= 8;
         }
+
         #endregion
     }
 }

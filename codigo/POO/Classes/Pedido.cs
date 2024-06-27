@@ -14,10 +14,12 @@ namespace POO.Classes
         public decimal CalcularTotal()
         {
             decimal total = 0;
+
             foreach (ItemPedido item in items)
             {
                 total += item.GetPreco();
             }
+
             return  total;
         }
 

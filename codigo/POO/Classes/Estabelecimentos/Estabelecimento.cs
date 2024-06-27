@@ -12,6 +12,7 @@ namespace POO.Classes.Estabelecimentos
         protected Cardapio cardapio;
         protected string nome;
         protected List<Requisicao> requisicoes = new List<Requisicao>();
+
         public Estabelecimento(string _nome, Cardapio _cardapio, List<Mesa> _mesas)
         {
             nome = _nome;
@@ -42,7 +43,7 @@ namespace POO.Classes.Estabelecimentos
 
                 return requisicao;
             }
-            throw new Exception("Não existe Requisicao para esse número de mesa!");
+            throw new Exception("Não existe requisição para esse número de mesa!");
         }
 
         public abstract Requisicao AdicionarPedido(int numeroDaMesa, Pedido pedido);
