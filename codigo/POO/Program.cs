@@ -1,5 +1,6 @@
 ﻿using POO.Classes;
 using POO.Classes.Estabelecimentos;
+using POO.Classes.NovaPasta;
 
 namespace ProgramRestaurante;
 
@@ -219,7 +220,7 @@ public class Program
             switch (opcao)
             {
                 case "P":
-                    p = AdicionarAoPedido();
+                    p.AdicionarItem(AdicionarAoPedido());
                     break;
                 default:
                     break;
@@ -227,19 +228,18 @@ public class Program
         }
         return p;
     }
-    private static Pedido AdicionarAoPedido()
+    private static ItemPedido AdicionarAoPedido()
     {
-        var pedido = new Pedido();
         Console.WriteLine("Informe o número do Item (O primeiro número do lado esquerdo)" +
          "insira 0 se quiser nada");
 
         int index = int.Parse(Console.ReadLine() ?? "0");
         if (index == 0) return null;
 
-        pedido.AdicionarItem(estabelecimento.EscolherItemPedido(index));
+        var item = estabelecimento.EscolherItemPedido(index);
         Console.WriteLine("Comida adicionada com sucesso!");
         Console.Clear();
-        return pedido;
+        return item;
     }
 
     #endregion
